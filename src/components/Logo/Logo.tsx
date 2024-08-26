@@ -1,13 +1,13 @@
-import { Flex, Text } from "@mantine/core";
+import { Flex, MantineSize, Text } from "@mantine/core";
 import Link from "next/link";
 import classes from "./Logo.module.css";
 
 interface Props {
-	width?: string;
-	height?: string;
+	size?: MantineSize | string; // This should be either a MantineSize or a string
+	variant?: "light" | "dark";
 }
 
-export const Logo: React.FC<Props> = () => {
+export const Logo: React.FC<Props> = ({ size = "xl", variant = "dark" }) => {
 	return (
 		<Flex direction="row" align="center" gap={4}>
 			<Link
@@ -15,9 +15,18 @@ export const Logo: React.FC<Props> = () => {
 				style={{ textDecoration: "none" }}
 				className={classes.heading}
 			>
-				<Text fw="bolder" size="xl">
+				<Text
+					fw="normal"
+					size={size}
+					c={variant === "light" ? "white" : "black"}
+				>
 					Recruit
-					<Text component="span" fw="normal" className={classes.subheading}>
+					<Text
+						component="span"
+						size={size}
+						fw="bold"
+						className={classes.subheading}
+					>
 						Next
 					</Text>
 				</Text>

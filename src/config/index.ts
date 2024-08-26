@@ -5,49 +5,52 @@ import {
   IconMoodSmile,
 } from "@tabler/icons-react";
 import type { NavItem } from "@/types/nav-item";
+import { IconListCheck, IconNote, IconFolder } from "@tabler/icons-react"; // Replace with your icon library
+
+export const  maxSkillsForAJob = 6;
+export const asideOptionData = [
+	{
+		name: "Task",
+		icon: IconListCheck ,
+	},
+	{
+		name: "Notes",
+		icon: IconNote ,
+	},
+	{
+		name: "Folder",
+		icon: IconFolder ,
+	},
+];
 
 export const navLinks: NavItem[] = [
   { label: "Dashboard", icon: IconDashboard, link: "/dashboard" },
 
   {
-    label: "Components",
+    label: "Inbox",
     icon: IconComponents,
-    initiallyOpened: true,
-    links: [
-      {
-        label: "Table",
-        link: "/dashboard/table",
-      },
-      {
-        label: "Form",
-        link: "/dashboard/form",
-      },
-    ],
+    link:"/inbox"
   },
   {
-    label: "Auth",
+    label: "Calender & Todos",
     icon: IconLock,
-    initiallyOpened: true,
-    links: [
-      {
-        label: "Login",
-        link: "/login",
-      },
-      {
-        label: "Register",
-        link: "/register",
-      },
-    ],
+    link : "/dashboard"
   },
   {
-    label: "Sample",
+    label: "RECRUITMENT",
     icon: IconMoodSmile,
     initiallyOpened: true,
     links: [
       {
-        label: "Landing",
+        label: "Jobs",
+        link: "/",
+      },
+      {
+        label: "Candidates",
         link: "/",
       },
     ],
   },
 ];
+
+

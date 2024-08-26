@@ -5,6 +5,7 @@ import { Header } from "@/components/Landing/Header";
 import { HeroSection } from "@/components/Landing/HeroSection";
 import HireOrGetHireSection from "@/components/Landing/HireOrGetHireSection";
 import { LandingContainer } from "@/components/Landing/LandingContainer";
+import "@mantine/tiptap/styles.css";
 
 export default function Page() {
 	return (

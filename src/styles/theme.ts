@@ -34,6 +34,19 @@ export const theme = createTheme({
 			"#AD830F",
 			"#99700D", 
 		],
+		navy: [
+			"#E8EBF0", // Lightest shade
+			"#C0C7D1",
+			"#99A3B3",
+			"#717F95",
+			"#4A5B77",
+			"#243759",
+			"#071126", // Your secondary color
+			"#060F20",
+			"#050D1A",
+			"#040B14",
+			"#03080E", // Darkest shade
+		],
 	},
 	primaryColor: "yellow",  
 	defaultRadius: "md",

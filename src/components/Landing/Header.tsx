@@ -77,7 +77,7 @@ export function Header({ links }: HeaderActionProps) {
 						className={classes.burger}
 						size="sm"
 					/>
-					<Logo />
+					<Logo variant="dark" size="xl" />
 				</Group>
 				<Group gap="sm" className={classes.links}>
 					{items}
