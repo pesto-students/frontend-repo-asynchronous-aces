@@ -1,4 +1,15 @@
-import { Avatar, Box, Button, Flex, Group, Table, Text } from "@mantine/core";
+import {
+	Avatar,
+	Box,
+	Button,
+	Chip,
+	Flex,
+	Group,
+	Modal,
+	Table,
+	Text,
+	Textarea,
+} from "@mantine/core";
 import React, { useState, useEffect } from "react";
 
 interface Candidate {
@@ -100,19 +111,55 @@ const CandidatesList = ({ jobId }: { jobId: number }) => {
 export default CandidatesList;
 
 export const CandidateRow = ({ user }: { user: Candidate }) => {
+	const [opened, setOpened] = useState(false);
+	const [message, setMessage] = useState("");
+	const handleMessageClick = () => {
+		setOpened(true); // Open the modal when the button is clicked
+	};
+
+	const handleSendMessage = () => {
+		// Logic to initiate the chat with the first message
+		console.log("Send message:", message);
+		setOpened(false); // Close the modal after sending the message
+	};
 	return (
-		<tr>
-			<td style={{ textAlign: "center" }}>
-				<Avatar radius="sm" src={user.avatar} />
-			</td>
-			<td style={{ textAlign: "center" }}>{user.name}</td>
-			<td style={{ textAlign: "center" }}>{user.role}</td>
-			<td style={{ textAlign: "center" }}>{user.status}</td>
-			<td style={{ textAlign: "center" }}>
-				<Button variant="outline" size="xs">
-					Message
-				</Button>
-			</td>
-		</tr>
+		<>
+			<tr>
+				<td style={{ textAlign: "center" }}>
+					<Avatar radius="sm" src={user.avatar} />
+				</td>
+				<td style={{ textAlign: "center" }}>{user.name}</td>
+				<td style={{ textAlign: "center" }}>{user.role}</td>
+				<td style={{ textAlign: "center" }}>
+					<Chip defaultChecked variant="light">
+						{user.status}
+					</Chip>
+				</td>
+				<td style={{ textAlign: "center" }}>
+					<Button variant="outline" size="xs" onClick={handleMessageClick}>
+						Message
+					</Button>
+				</td>
+			</tr>
+			<Modal
+				opened={opened}
+				onClose={() => setOpened(false)}
+				transitionProps={{
+					transition: "fade",
+					duration: 600,
+					timingFunction: "linear",
+				}}
+				title={`Send your first message to ${user.name}`}
+			>
+				<Textarea
+					placeholder="Type your message here..."
+					value={message}
+					onChange={(e) => setMessage(e.target.value)}
+				/>
+				<Group justify="right" mt="md">
+					<Button onClick={handleSendMessage}>Send Message</Button>
+				</Group>
+			</Modal>
+		</>
 	);
 };

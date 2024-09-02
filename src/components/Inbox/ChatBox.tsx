@@ -1,4 +1,5 @@
 "use client";
+
 import {
 	Box,
 	Button,
@@ -10,11 +11,14 @@ import {
 	Paper,
 	Stack,
 	Text,
-	TextInput,
+	Textarea,
 	useMantineTheme,
 	FileInput,
 	Flex,
-	Textarea,
+	Tabs,
+	useMantineColorScheme,
+	TextInput,
+	Select,
 } from "@mantine/core";
 import {
 	IconMail,
@@ -24,9 +28,13 @@ import {
 } from "@tabler/icons-react";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { InlineWidget, PopupButton, PopupWidget } from "react-calendly";
+import { InlineWidget } from "react-calendly";
+import CollaborativeEditor from "./CollaborativeEditor";
+import { useMediaQuery } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
 
 const isRecruiter = true;
+
 // Type Definitions
 type User = {
 	userId: number;
@@ -38,6 +46,8 @@ type Attachment = {
 	url: string;
 };
 
+type ChatStatus = "active" | "interviewed" | "hired" | "rejected";
+
 interface Chat {
 	chatId: number;
 	receiver: Profile;
@@ -48,6 +58,7 @@ interface Chat {
 		links: string[];
 		sender: User;
 	}[];
+	status: ChatStatus;
 }
 
 interface Profile {
@@ -57,7 +68,7 @@ interface Profile {
 	job: string;
 	email: string;
 	phone: string;
-	calendyUserName: string;
+	calendlyUserName: string;
 }
 
 // Mock Data
@@ -71,8 +82,9 @@ const mockChats: Chat[] = [
 			avatar: "https://example.com/avatar-mihir.jpg",
 			email: "gadhemihir96@gmail.com",
 			phone: "9637059439",
-			calendyUserName: "gadhemihir96",
+			calendlyUserName: "gadhemihir96",
 		},
+		status: "active",
 		messages: [
 			{
 				msgNum: 1,
@@ -90,6 +102,122 @@ const mockChats: Chat[] = [
 			},
 		],
 	},
+	{
+		chatId: 2,
+		receiver: {
+			userId: 7,
+			name: "Priya Shah",
+			job: "Backend Developer",
+			avatar: "https://example.com/avatar-priya.jpg",
+			email: "priya.shah@example.com",
+			phone: "9876543210",
+			calendlyUserName: "priyashah",
+		},
+		status: "interviewed",
+		messages: [
+			{
+				msgNum: 1,
+				text: "Hello Priya, are you available for a meeting tomorrow?",
+				attachments: [],
+				links: [],
+				sender: { userId: 1, name: "Vardhan" },
+			},
+			{
+				msgNum: 2,
+				text: "Hi Vardhan, yes, I am available at 10 AM.",
+				attachments: [],
+				links: [],
+				sender: { userId: 7, name: "Priya" },
+			},
+		],
+	},
+	{
+		chatId: 3,
+		receiver: {
+			userId: 8,
+			name: "Rohan Mehta",
+			job: "Data Scientist",
+			avatar: "https://example.com/avatar-rohan.jpg",
+			email: "rohan.mehta@example.com",
+			phone: "9123456780",
+			calendlyUserName: "rohanmehta",
+		},
+		status: "hired",
+		messages: [
+			{
+				msgNum: 1,
+				text: "Congratulations Rohan, you're hired!",
+				attachments: [],
+				links: [],
+				sender: { userId: 1, name: "Vardhan" },
+			},
+			{
+				msgNum: 2,
+				text: "Thank you, Vardhan! I'm excited to join the team.",
+				attachments: [],
+				links: [],
+				sender: { userId: 8, name: "Rohan" },
+			},
+		],
+	},
+	{
+		chatId: 4,
+		receiver: {
+			userId: 9,
+			name: "Anjali Verma",
+			job: "Marketing Specialist",
+			avatar: "https://example.com/avatar-anjali.jpg",
+			email: "anjali.verma@example.com",
+			phone: "8765432109",
+			calendlyUserName: "anjaliverma",
+		},
+		status: "rejected",
+		messages: [
+			{
+				msgNum: 1,
+				text: "Hi Anjali, thank you for your time. Unfortunately, we have decided to move forward with other candidates.",
+				attachments: [],
+				links: [],
+				sender: { userId: 1, name: "Vardhan" },
+			},
+			{
+				msgNum: 2,
+				text: "Thank you for the opportunity, Vardhan. I appreciate the consideration.",
+				attachments: [],
+				links: [],
+				sender: { userId: 9, name: "Anjali" },
+			},
+		],
+	},
+	{
+		chatId: 5,
+		receiver: {
+			userId: 10,
+			name: "Vikram Singh",
+			job: "Product Manager",
+			avatar: "https://example.com/avatar-vikram.jpg",
+			email: "vikram.singh@example.com",
+			phone: "9988776655",
+			calendlyUserName: "vikramsingh",
+		},
+		status: "active",
+		messages: [
+			{
+				msgNum: 1,
+				text: "Hey Vikram, could you provide more details on the project?",
+				attachments: [],
+				links: [],
+				sender: { userId: 1, name: "Vardhan" },
+			},
+			{
+				msgNum: 2,
+				text: "Sure, Vardhan. I'll send over the documents shortly.",
+				attachments: [],
+				links: [],
+				sender: { userId: 10, name: "Vikram" },
+			},
+		],
+	},
 ];
 
 // Main ChatBox Component
@@ -102,6 +230,11 @@ const ChatBox = () => {
 	const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
 	const [searchQuery, setSearchQuery] = useState<string>("");
 	const [showCalendly, setShowCalendly] = useState(false);
+	const { colorScheme } = useMantineColorScheme();
+
+	const isSmallScreen = useMediaQuery("(max-width: 768px)");
+	const bg =
+		colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[0];
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -116,46 +249,59 @@ const ChatBox = () => {
 	}, []);
 
 	const handleSendMessage = () => {
-		if (
-			newMessage.trim() !== ""
-			// || newAttachments.length > 0 ||
-			// newLinks.length > 0
-		) {
-			const newMsg = {
-				msgNum: selectedChat?.messages.length + 1 || 1,
-				text: newMessage,
-				attachments: newAttachments,
-				links: newLinks,
-				sender: { userId: 1, name: "Vardhan" }, // Replace with actual sender info
-			};
+		if (selectedChat) {
+			if (newMessage.trim() !== "") {
+				const newMsg = {
+					msgNum: selectedChat?.messages.length + 1 || 1,
+					text: newMessage,
+					attachments: newAttachments,
+					links: newLinks,
+					sender: { userId: 1, name: "Vardhan" }, // Replace with actual sender info
+				};
 
-			axios
-				.post("/api/chat", { message: newMsg })
-				.then((response) => {
-					setChats((prevChats) => {
-						return prevChats.map((chat) =>
-							chat.chatId === selectedChat?.chatId
-								? { ...chat, messages: [...chat.messages, response.data] }
-								: chat,
-						);
+				axios
+					.post("/api/chat", { message: newMsg })
+					.then((response) => {
+						setChats((prevChats) => {
+							return prevChats.map((chat) =>
+								chat.chatId === selectedChat?.chatId
+									? { ...chat, messages: [...chat.messages, response.data] }
+									: chat,
+							);
+						});
+						setNewMessage("");
+						setNewAttachments([]);
+						setNewLinks([]);
+					})
+					.catch((error) => {
+						console.error("Error sending message:", error);
 					});
-					setNewMessage("");
-					setNewAttachments([]);
-					setNewLinks([]);
-				})
-				.catch((error) => {
-					console.error("Error sending message:", error);
-				});
+			}
+		} else {
+			console.log("No chat selected.");
 		}
 	};
 
 	const handleChatClick = (chat: Chat) => {
 		setSelectedChat(chat);
-		setReceiverProfile(mockProfiles[chat.receiver.userId]);
+		notifications.show({
+			title: "Chat selected",
+			message: "Chat",
+			color: "green",
+			w: "200px",
+
+			styles: (theme) => ({
+				root: {
+					position: "fixed",
+					zIndex: 9999,
+					bottom: 0,
+					right: 0,
+				},
+			}),
+		});
 	};
 
 	const handleFileUpload = (file: File) => {
-		// Simulate file upload and generate a mock URL
 		const url = URL.createObjectURL(file);
 		const attachment = { name: file.name, url };
 		setNewAttachments((prevAttachments) => [...prevAttachments, attachment]);
@@ -168,156 +314,465 @@ const ChatBox = () => {
 	const filteredChats = chats.filter((chat) =>
 		chat.receiver.name.toLowerCase().includes(searchQuery.toLowerCase()),
 	);
+	const handleStatusChange = async (chatId: number, newStatus: ChatStatus) => {
+		try {
+			const response = await axios.put(`/api/chats/${chatId}/status`, {
+				status: newStatus,
+			});
+
+			if (response.status === 200) {
+				// Optionally update the local state or UI based on the response
+				// A function to update the local state
+
+				notifications.show({
+					title: "Success",
+					message: "Status updated successfully!",
+					color: "green",
+					w: "200px",
+
+					styles: (theme) => ({
+						root: {
+							position: "fixed",
+							zIndex: 9999,
+							bottom: 0,
+							right: 0,
+						},
+					}),
+				});
+			} else {
+				// Handle unexpected response status
+				notifications.show({
+					title: "Success",
+					message: "Failed to update status.",
+					color: "red",
+					w: "200px",
+
+					styles: (theme) => ({
+						root: {
+							position: "fixed",
+							zIndex: 9999,
+							bottom: 0,
+							right: 0,
+						},
+					}),
+				});
+			}
+		} catch (error) {
+			// Handle error (network issue, server error, etc.)
+			notifications.show({
+				title: "Success",
+				message: "An error occurred.",
+				color: "red",
+				w: "200px",
+
+				styles: (theme) => ({
+					root: {
+						position: "fixed",
+						zIndex: 9999,
+						bottom: 0,
+						right: 0,
+					},
+				}),
+			});
+
+			console.error("Error updating status:", error);
+		}
+	};
 
 	return (
 		<Box p={20}>
-			<Text>Chat</Text>
-			<Divider />
-
-			<Grid align="flex-start" mt={10}>
-				{/* Chat list */}
-				<GridCol span={3}>
-					<TextInput
-						placeholder="Search by name..."
-						value={searchQuery}
-						onChange={(event) => setSearchQuery(event.currentTarget.value)}
-						mb={10}
-					/>
-					<Stack>
-						{filteredChats.length > 0 ? (
-							filteredChats.map((chat) => (
-								<Button
-									key={chat.chatId}
-									h={60}
-									bg={"white"}
-									onClick={() => handleChatClick(chat)}
-								>
-									<ChatItem chat={chat} />
-								</Button>
-							))
-						) : (
-							<Text>No chats found.</Text>
-						)}
-					</Stack>
-				</GridCol>
-
-				{/* Selected chat and receiver profile */}
-				{selectedChat && (
-					<>
-						<GridCol span={6}>
-							<Paper
-								p={10}
-								mih={"65vh"}
-								style={{
-									display: "flex",
-									flexDirection: "column",
-									justifyContent: "flex-end",
-								}}
-							>
-								{selectedChat.messages.map((message) => (
-									<Box
-										style={{ display: "flex", flexDirection: "column" }}
-										key={message.msgNum}
-										mb={10}
-									>
-										<Box>
-											<Text fw={500}>{message.sender.name}</Text>
-											<Text>{message.text}</Text>
-											{message.attachments.map((attachment, index) => (
-												<a
-													key={index}
-													href={attachment.url}
-													target="_blank"
-													rel="noopener noreferrer"
-												>
-													<Text c="blue">{attachment.name}</Text>
-												</a>
-											))}
-											{message.links.map((link, index) => (
-												<a
-													key={index}
-													href={link}
-													target="_blank"
-													rel="noopener noreferrer"
-												>
-													<Text color="blue">{link}</Text>
-												</a>
-											))}
-										</Box>
-									</Box>
-								))}
-							</Paper>
-
-							<Grid
-								bg={"white"}
-								style={{ borderTop: "2px solid lightgrey" }}
-								mt={10}
-								h={"21.25vh"}
-							>
-								<GridCol span={12}>
-									<Textarea
-										placeholder="Type your message..."
-										variant="filled"
-										autosize
-										minRows={7}
-										maxRows={7}
-										m={"sm"}
-										onChange={(event) => setNewMessage(event.target.value)}
-										style={{ resize: "none" }}
-									/>
-								</GridCol>
-								{/* <GridCol span={1}>
-									<FileInput
-										placeholder="Attach files"
-										onChange={handleFileUpload}
-										mb="sm"
-									/>
-								</GridCol>
-								<GridCol span={1}>
-									<TextInput
-										placeholder="Add link (e.g., Google Meet, Calendly)"
-										onKeyDown={(event) => {
-											if (
-												event.key === "Enter" &&
-												event.currentTarget.value.trim() !== ""
-											) {
-												handleAddLink(event.currentTarget.value.trim());
-												event.currentTarget.value = "";
-											}
-										}}
-										mb="sm"
-									/>
-								</GridCol> */}
-								<GridCol span={12}>
-									<Flex justify={"space-around"}>
-										<Flex gap={20}>
+			{isSmallScreen ? (
+				<Tabs defaultValue={"Chats"}>
+					<Tabs.List justify="space-between">
+						<Tabs.Tab value="Chats">Chats</Tabs.Tab>
+						<Tabs.Tab value="Message">Messages</Tabs.Tab>
+						<Tabs.Tab value="Profile">Profile</Tabs.Tab>
+					</Tabs.List>
+					<Tabs.Panel value="Chats">
+						<Divider mt={10} />
+						<TextInput
+							placeholder="Search by name..."
+							value={searchQuery}
+							onChange={(event) => setSearchQuery(event.currentTarget.value)}
+							mb={10}
+						/>
+						<Stack>
+							{filteredChats.length > 0 ? (
+								filteredChats.map((chat) => (
+									<Grid key={chat.chatId}>
+										<Grid.Col span={9}>
 											<Button
-												variant="outline"
-												mt="sm"
-												onClick={() => {
-													// Show file attachment pop-up
-													const input = document.createElement("input");
-													input.type = "file";
-													input.onchange = (event: any) => {
-														handleFileUpload(event.target.files[0]);
-													};
-													input.click();
-												}}
+												h={60} // Set the height of the Button
+												w="100%"
+												bg={bg}
+												onClick={() => handleChatClick(chat)}
+												p={0} // Ensure no extra padding
 											>
-												Attach
+												<ChatItem colorScheme={colorScheme} chat={chat} />
 											</Button>
-										</Flex>
+										</Grid.Col>
+										{isRecruiter && (
+											<Grid.Col span={2}>
+												<Select
+													value={chat.status}
+													onChange={(status) =>
+														handleStatusChange(
+															chat.chatId,
+															status as ChatStatus,
+														)
+													}
+													data={[
+														{ value: "active", label: "Active" },
+														{ value: "interviewed", label: "Interviewed" },
+														{ value: "hired", label: "Hired" },
+														{ value: "rejected", label: "Rejected" },
+													]}
+													placeholder="Change status"
+													w={100}
+													h={60} // Set the height of the Select to match the Button
+													pt={0}
+													pb={0} // Ensure the Select dropdown aligns vertically
+												/>
+											</Grid.Col>
+										)}
+									</Grid>
+								))
+							) : (
+								<Text>No chats found.</Text>
+							)}
+						</Stack>
+					</Tabs.Panel>
+					<Tabs.Panel value="Message">
+						{selectedChat ? (
+							<Grid align="flex-start" mt={10}>
+								<GridCol span={12}>
+									<Paper
+										p={10}
+										mih={"65vh"}
+										style={{
+											display: "flex",
+											flexDirection: "column",
+											justifyContent: "flex-end",
+										}}
+									>
+										{selectedChat.messages.map((message) => (
+											<Box
+												style={{ display: "flex", flexDirection: "column" }}
+												key={message.msgNum}
+												mb={10}
+											>
+												<Box>
+													<Text fw={500}>{message.sender.name}</Text>
+													<Text>{message.text}</Text>
+													{message.attachments.map((attachment, index) => (
+														<a
+															key={index}
+															href={attachment.url}
+															target="_blank"
+															rel="noopener noreferrer"
+														>
+															<Text c="blue">{attachment.name}</Text>
+														</a>
+													))}
+													{message.links.map((link, index) => (
+														<a
+															key={index}
+															href={link}
+															target="_blank"
+															rel="noopener noreferrer"
+														>
+															<Text color="blue">{link}</Text>
+														</a>
+													))}
+												</Box>
+											</Box>
+										))}
+									</Paper>
 
-										<Button onClick={handleSendMessage} mt="sm">
-											Send
-										</Button>
-									</Flex>
+									<Grid
+										bg={bg}
+										style={{ borderTop: "2px solid lightgrey" }}
+										mt={10}
+										h={"21.25vh"}
+									>
+										<GridCol span={12}>
+											<Textarea
+												placeholder="Type your message..."
+												variant="filled"
+												autosize
+												minRows={7}
+												maxRows={7}
+												m={"sm"}
+												onChange={(event) => setNewMessage(event.target.value)}
+												style={{ resize: "none" }}
+											/>
+										</GridCol>
+										<GridCol span={12}>
+											<Flex justify={"space-around"}>
+												<Flex gap={20}>
+													<Button
+														variant="outline"
+														mt="sm"
+														onClick={() => {
+															const input = document.createElement("input");
+															input.type = "file";
+															input.onchange = (event: any) => {
+																handleFileUpload(event.target.files[0]);
+															};
+															input.click();
+														}}
+													>
+														Attach
+													</Button>
+												</Flex>
+
+												<Button onClick={handleSendMessage} mt="sm">
+													Send
+												</Button>
+											</Flex>
+										</GridCol>
+									</Grid>
 								</GridCol>
 							</Grid>
-						</GridCol>
-						<Divider my="sm" />
-						{selectedChat.receiver && (
-							<GridCol bg={"white"} p={10} mt={10} span={3} h={"87vh"}>
+						) : (
+							<Text mt={20}>Select a chat to view messages.</Text>
+						)}
+					</Tabs.Panel>
+					<Tabs.Panel value="Profile">
+						{selectedChat ? (
+							<Grid bg={bg} p={10} mt={10}>
+								<GridCol span={12}>
+									<Box
+										style={{
+											display: "flex",
+											flexDirection: "column",
+											alignItems: "center",
+										}}
+									>
+										<Image
+											src={"/profile.png"}
+											alt={selectedChat.receiver.name}
+											radius="full"
+										/>
+										<Text mt="xs" fw={500}>
+											{selectedChat.receiver.name}
+										</Text>
+										{!showCalendly && (
+											<>
+												<Text mt="xs" c="dimmed">
+													{selectedChat.receiver.job || "Not specified"}
+												</Text>
+												<Button mt="sm" variant="outline" size="sm">
+													View Profile
+												</Button>
+												<Divider my="sm" c={"black"} />
+												<Text mt="xs" fw={500}>
+													Applied For:
+												</Text>
+												<Text mt="xs" c="dimmed">
+													{selectedChat.receiver.job || "Not specified"}
+												</Text>
+												<Text mt="xs" c="dimmed">
+													Design
+												</Text>
+												<Divider my="sm" />
+												<Stack gap={10}>
+													<Flex justify="flex-start" align="center">
+														<IconMail
+															size={16}
+															style={{ marginRight: "8px" }}
+														/>
+														<Text c="dimmed" style={{ lineHeight: 1 }}>
+															{selectedChat.receiver.email || "Not specified"}
+														</Text>
+													</Flex>
+													<Flex justify="flex-start" align="center">
+														<IconPhone
+															size={16}
+															style={{ marginRight: "8px" }}
+														/>
+														<Text c="dimmed" style={{ lineHeight: 1 }}>
+															{selectedChat.receiver.phone || "Not specified"}
+														</Text>
+													</Flex>
+												</Stack>
+											</>
+										)}
+										<Divider my="sm" />
+										{isRecruiter && (
+											<Button
+												mt="sm"
+												variant="outline"
+												size="sm"
+												onClick={() => setShowCalendly(!showCalendly)}
+											>
+												{!showCalendly ? "Schedule" : <IconX size={16} />}
+											</Button>
+										)}
+										{showCalendly && (
+											<InlineWidget
+												styles={{ height: "50vh", marginTop: "10px" }}
+												url={`https://calendly.com/${selectedChat.receiver.calendlyUserName}/30min`}
+											/>
+										)}
+									</Box>
+								</GridCol>
+							</Grid>
+						) : (
+							<Text mt={20}>Select a chat to view profile.</Text>
+						)}
+					</Tabs.Panel>
+				</Tabs>
+			) : (
+				<Grid align="flex-start" mt={10}>
+					{/* Chat list */}
+					<GridCol span={3}>
+						<TextInput
+							placeholder="Search by name..."
+							value={searchQuery}
+							onChange={(event) => setSearchQuery(event.currentTarget.value)}
+							mb={10}
+						/>
+						<Stack>
+							{filteredChats.length > 0 ? (
+								filteredChats.map((chat) => (
+									<Grid key={chat.chatId}>
+										<Grid.Col span={9}>
+											<Button
+												h={60} // Set the height of the Button
+												w="100%"
+												bg={bg}
+												onClick={() => handleChatClick(chat)}
+												p={0} // Ensure no extra padding
+											>
+												<ChatItem colorScheme={colorScheme} chat={chat} />
+											</Button>
+										</Grid.Col>
+										{isRecruiter && (
+											<Grid.Col span={2}>
+												<Select
+													value={chat.status}
+													onChange={(status) =>
+														handleStatusChange(
+															chat.chatId,
+															status as ChatStatus,
+														)
+													}
+													data={[
+														{ value: "active", label: "Active" },
+														{ value: "interviewed", label: "Interviewed" },
+														{ value: "hired", label: "Hired" },
+														{ value: "rejected", label: "Rejected" },
+													]}
+													placeholder="Change status"
+													w={80}
+													h={60} // Set the height of the Select to match the Button
+													pt={0}
+													pb={0} // Ensure the Select dropdown aligns vertically
+												/>
+											</Grid.Col>
+										)}
+									</Grid>
+								))
+							) : (
+								<Text>No chats found.</Text>
+							)}
+						</Stack>
+					</GridCol>
+
+					{/* Selected chat and receiver profile */}
+					{selectedChat && (
+						<>
+							<GridCol span={6}>
+								<Paper
+									p={10}
+									mih={"65vh"}
+									style={{
+										display: "flex",
+										flexDirection: "column",
+										justifyContent: "flex-end",
+									}}
+								>
+									{selectedChat.messages.map((message) => (
+										<Box
+											style={{ display: "flex", flexDirection: "column" }}
+											key={message.msgNum}
+											mb={10}
+										>
+											<Box>
+												<Text fw={500}>{message.sender.name}</Text>
+												<Text>{message.text}</Text>
+												{message.attachments.map((attachment, index) => (
+													<a
+														key={index}
+														href={attachment.url}
+														target="_blank"
+														rel="noopener noreferrer"
+													>
+														<Text c="blue">{attachment.name}</Text>
+													</a>
+												))}
+												{message.links.map((link, index) => (
+													<a
+														key={index}
+														href={link}
+														target="_blank"
+														rel="noopener noreferrer"
+													>
+														<Text color="blue">{link}</Text>
+													</a>
+												))}
+											</Box>
+										</Box>
+									))}
+								</Paper>
+
+								<Grid
+									bg={bg}
+									style={{ borderTop: "2px solid lightgrey" }}
+									mt={10}
+									h={"21.25vh"}
+								>
+									<GridCol span={12}>
+										<Textarea
+											placeholder="Type your message..."
+											variant="filled"
+											autosize
+											minRows={7}
+											maxRows={7}
+											m={"sm"}
+											onChange={(event) => setNewMessage(event.target.value)}
+											style={{ resize: "none" }}
+										/>
+									</GridCol>
+									<GridCol span={12}>
+										<Flex justify={"space-around"}>
+											<Flex gap={20}>
+												<Button
+													variant="outline"
+													mt="sm"
+													onClick={() => {
+														const input = document.createElement("input");
+														input.type = "file";
+														input.onchange = (event: any) => {
+															handleFileUpload(event.target.files[0]);
+														};
+														input.click();
+													}}
+												>
+													Attach
+												</Button>
+											</Flex>
+
+											<Button onClick={handleSendMessage} mt="sm">
+												Send
+											</Button>
+										</Flex>
+									</GridCol>
+								</Grid>
+							</GridCol>
+							<Divider my="sm" />
+							<GridCol bg={bg} p={10} mt={10} span={3} h={"87vh"}>
 								<Box
 									style={{
 										display: "flex",
@@ -325,10 +780,7 @@ const ChatBox = () => {
 										alignItems: "center",
 									}}
 								>
-									{" "}
-									{/* Added flexbox styles */}
 									<Image
-										// src={selectedChat.receiver.avatar}
 										src={"/profile.png"}
 										alt={selectedChat.receiver.name}
 										radius="full"
@@ -341,7 +793,6 @@ const ChatBox = () => {
 											<Text mt="xs" c="dimmed">
 												{selectedChat.receiver.job || "Not specified"}
 											</Text>
-											{/* <StarRating rating={4.0} />  Assuming a rating of 4.0 */}
 											<Button mt="sm" variant="outline" size="sm">
 												View Profile
 											</Button>
@@ -357,19 +808,14 @@ const ChatBox = () => {
 											</Text>
 											<Divider my="sm" />
 											<Stack gap={10}>
-												{/* Email */}
 												<Flex justify="flex-start" align="center">
-													<IconMail size={16} style={{ marginRight: "8px" }} />{" "}
-													{/* Added marginRight */}
+													<IconMail size={16} style={{ marginRight: "8px" }} />
 													<Text c="dimmed" style={{ lineHeight: 1 }}>
 														{selectedChat.receiver.email || "Not specified"}
 													</Text>
 												</Flex>
-
-												{/* Phone */}
 												<Flex justify="flex-start" align="center">
-													<IconPhone size={16} style={{ marginRight: "8px" }} />{" "}
-													{/* Added marginRight */}
+													<IconPhone size={16} style={{ marginRight: "8px" }} />
 													<Text c="dimmed" style={{ lineHeight: 1 }}>
 														{selectedChat.receiver.phone || "Not specified"}
 													</Text>
@@ -391,15 +837,15 @@ const ChatBox = () => {
 									{showCalendly && (
 										<InlineWidget
 											styles={{ height: "50vh", marginTop: "10px" }}
-											url={`https://calendly.com/${selectedChat.receiver.calendyUserName}/30min`}
+											url={`https://calendly.com/${selectedChat.receiver.calendlyUserName}/30min`}
 										/>
 									)}
 								</Box>
 							</GridCol>
-						)}
-					</>
-				)}
-			</Grid>
+						</>
+					)}
+				</Grid>
+			)}
 		</Box>
 	);
 };
@@ -407,7 +853,13 @@ const ChatBox = () => {
 export default ChatBox;
 
 // ChatItem Component for rendering individual chat list items
-const ChatItem = ({ chat }: { chat: Chat }) => {
+const ChatItem = ({
+	chat,
+	colorScheme,
+}: {
+	chat: Chat;
+	colorScheme: string;
+}) => {
 	return (
 		<Grid align="center" justify="flex-start">
 			<Grid.Col span={3}>
@@ -421,7 +873,11 @@ const ChatItem = ({ chat }: { chat: Chat }) => {
 			</Grid.Col>
 			<Grid.Col span={9}>
 				<Stack gap={0}>
-					<Text size="md" c={"black"} fw={500}>
+					<Text
+						size="md"
+						c={colorScheme === "dark" ? "white" : "black"}
+						fw={500}
+					>
 						{chat.receiver.name}
 					</Text>
 					<Text size="sm" c="dimmed">

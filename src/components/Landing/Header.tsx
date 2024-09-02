@@ -9,6 +9,7 @@ import {
 	Menu,
 	rem,
 	Stack,
+	useMantineColorScheme,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconChevronDown } from "@tabler/icons-react";
@@ -25,6 +26,7 @@ interface HeaderActionProps {
 
 export function Header({ links }: HeaderActionProps) {
 	const [opened, { toggle }] = useDisclosure(false);
+	const { colorScheme } = useMantineColorScheme();
 	const items = links.map((link) => {
 		const menuItems = link.links?.map((item) => (
 			<Menu.Item key={item.link}>{item.label}</Menu.Item>
@@ -77,7 +79,7 @@ export function Header({ links }: HeaderActionProps) {
 						className={classes.burger}
 						size="sm"
 					/>
-					<Logo variant="dark" size="xl" />
+					<Logo variant={colorScheme === "dark" ? "light" : "dark"} size="xl" />
 				</Group>
 				<Group gap="sm" className={classes.links}>
 					{items}

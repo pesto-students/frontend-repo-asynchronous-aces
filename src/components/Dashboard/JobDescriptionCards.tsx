@@ -1,3 +1,4 @@
+"use client";
 import {
 	Divider,
 	Flex,
@@ -23,12 +24,17 @@ import Superscript from "@tiptap/extension-superscript";
 import Subscript from "@tiptap/extension-subscript";
 import { useState } from "react";
 import {
+	IconCheck,
 	IconDeviceFloppy,
 	IconEdit,
 	IconPencilCancel,
+	IconX,
 } from "@tabler/icons-react";
 import { MdDelete } from "react-icons/md";
 import { maxSkillsForAJob } from "@/config";
+import { theme } from "@/styles/theme";
+import { notifications } from "@mantine/notifications";
+import axios from "axios";
 
 type attachement = {
 	name: string;
@@ -44,6 +50,7 @@ const SkillsSection = ({
 	editMode,
 	onSkillsChange,
 }: skillsSectionProps) => {
+	const { colorScheme } = useMantineColorScheme();
 	const handleSkillChange = (
 		e: React.ChangeEvent<HTMLInputElement>,
 		idx: number,
@@ -80,12 +87,12 @@ const SkillsSection = ({
 						) : (
 							<Text
 								style={{
-									padding: "2px",
+									padding: "0.5rem",
 									borderRadius: "12px",
 									margin: "0px auto",
 								}}
 								size="sm"
-								bg={"lightgrey"}
+								bg={colorScheme === "dark" ? theme.primaryColor : "lightgrey"}
 								key={idx}
 							>
 								{skill}
@@ -197,6 +204,7 @@ const AttachmentSection = ({
 	editMode: boolean;
 	onAttachmentChange: (updatedAttachments: attachement[]) => void;
 }) => {
+	const { colorScheme } = useMantineColorScheme();
 	const handleAttachmentChange = (
 		e: React.ChangeEvent<HTMLInputElement>,
 		idx: number,
@@ -253,15 +261,16 @@ const AttachmentSection = ({
 								href={attachment.url}
 								onClick={(event) => event.preventDefault()}
 								style={{
-									padding: "2px",
+									padding: "0.5rem",
 									borderRadius: "12px",
 									margin: "0px auto",
 								}}
-								size="xs"
-								bg={"lightgrey"}
+								bg={colorScheme === "dark" ? theme.primaryColor : "lightgrey"}
 								key={idx}
 							>
-								{attachment.name}
+								<Text fw={"bolder"} size="sm" key={idx}>
+									{attachment.name}
+								</Text>
 							</Button>
 						);
 					})}
@@ -324,23 +333,62 @@ const JobDescriptionCards = ({
 	const theme = useMantineTheme();
 
 	const bg = colorScheme === "dark" ? theme.colors.dark[7] : "white";
-	const handleSave = () => {
-		// Implement your save logic here, such as calling an API to update the job details
-		console.log("Saving updated details...", {
-			editableJobDescription,
-			editableSkills,
-			editableAttachments,
-			editableHiringManager,
-			editableDepartment,
-			editableRecruitmentQuota,
-			editableJobType,
-			editableExperiences,
-			editableLocation,
-			editableSalary,
-		});
+	const handleSave = async () => {
+		try {
+			// const response = await axios.put("/api/jobs/update", {
+			// 	jobDescription: editableJobDescription,
+			// 	skills: editableSkills,
+			// 	attachements: editableAttachments,
+			// 	hiringManager: editableHiringManager,
+			// 	department: editableDepartment,
+			// 	recruitmentQuota: editableRecruitmentQuota,
+			// 	jobType: editableJobType,
+			// 	experiences: editableExperiences,
+			// 	location: editableLocation,
+			// 	salary: editableSalary,
+			// });
+			notifications.show({
+				title: "Success",
+				message: "Job details saved successfully!",
+				color: "green",
+				w: "200px",
 
-		// After saving, you might want to exit edit mode
-		setEditMode(false);
+				styles: (theme) => ({
+					root: {
+						position: "fixed",
+						zIndex: 9999,
+						bottom: 0,
+						right: 0,
+					},
+				}),
+			});
+			setEditMode(false);
+
+			// if (response.status === 200) {
+			// 	notifications.show({
+			// 		title: 'Success',
+			// 		message: 'Job details saved successfully!',
+			// 		color: 'green',
+			// 	  });
+			// 	setEditMode(false); // Exit edit mode on successful save
+			// }
+		} catch (error) {
+			notifications.show({
+				title: "Error",
+				message: "Failed to save job details. Please try again.",
+				color: "red",
+				w: "200px",
+				styles: (theme) => ({
+					root: {
+						position: "fixed",
+						zIndex: 9999,
+						bottom: 0,
+						right: 0,
+					},
+				}),
+			});
+			console.error("Failed to save job details:", error);
+		}
 	};
 	return (
 		<Grid>

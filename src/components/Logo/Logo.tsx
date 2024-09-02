@@ -1,4 +1,10 @@
-import { Flex, MantineSize, Text } from "@mantine/core";
+import {
+	Flex,
+	MantineSize,
+	Text,
+	useMantineColorScheme,
+	useMantineTheme,
+} from "@mantine/core";
 import Link from "next/link";
 import classes from "./Logo.module.css";
 
@@ -7,7 +13,7 @@ interface Props {
 	variant?: "light" | "dark";
 }
 
-export const Logo: React.FC<Props> = ({ size = "xl", variant = "dark" }) => {
+export const Logo: React.FC<Props> = ({ size = "xl", variant }) => {
 	return (
 		<Flex direction="row" align="center" gap={4}>
 			<Link

@@ -1,3 +1,4 @@
+"use client";
 import {
 	Box,
 	Button,
@@ -24,22 +25,15 @@ import {
 } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
-import { DescriptionEditor } from "./JobDescriptionCards";
-import { warnOptionHasBeenMovedOutOfExperimental } from "next/dist/server/config";
-import { useMediaQuery } from "@mantine/hooks";
 
-interface JobCardProps {
-	id: number;
-	title: string;
-	department: string;
-	jobType: string;
-	recruitmentQuota: string;
-	experiences: string;
-	location: string;
-	salary: string;
-	status: "active" | "inactive";
-	candidatesApplied: string;
-}
+import ApplyJobModal from "./ApplyJobModal";
+import { useAppDispatch, useAppSelector } from "@/store/store";
+import { Job } from "@/types/type";
+import {
+	addJob,
+	setSelectedDepartment,
+	setSelectedStatus,
+} from "@/store/slices/jobSlice";
 
 const isRecruiter = true;
 const JobCard = ({
@@ -52,16 +46,49 @@ const JobCard = ({
 	location,
 	salary,
 	candidatesApplied,
-}: JobCardProps) => {
+}: Job) => {
 	const router = useRouter();
+	const [isApplyModalOpen, setIsApplyModalOpen] = useState<boolean>(false);
+	const handleApply = () => {
+		setIsApplyModalOpen(true);
+	};
 
+	const handleModalClose = () => {
+		setIsApplyModalOpen(false);
+	};
+
+	const handleApplicationSubmit = async (applicationData: {
+		email: string;
+		resume: File;
+	}) => {
+		try {
+			const response = await fetch("/api/apply", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					jobId: jobId,
+					email: applicationData.email,
+					resume: applicationData.resume.name, // Save the file name or path
+				}),
+			});
+
+			const data = await response.json();
+			if (data.success) {
+				alert("Application submitted successfully!");
+			} else {
+				alert("Failed to submit application.");
+			}
+		} catch (error) {
+			console.error("Error submitting application:", error);
+		}
+	};
 	const handleSeeDetails = () => {
-		console.log("1244");
 		router.push(`/dashboard/job-details/${jobId}`);
 	};
 	const theme = useMantineTheme();
 	const { colorScheme } = useMantineColorScheme();
-	const isSmallScreen = useMediaQuery("(max-width: 768px)");
 	const bg =
 		colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[0];
 
@@ -137,7 +164,7 @@ const JobCard = ({
 								gap="xs"
 								bg={bg}
 								ta={"center"}
-								w={{ base: 350, md: 250, lg: 250 }}
+								w={{ base: 300, md: 250, lg: 250 }}
 								h={{ base: 100, lg: 100 }}
 								align={"center"}
 							>
@@ -164,72 +191,33 @@ const JobCard = ({
 				<Button variant="outline" size="xs" onClick={handleSeeDetails}>
 					See Details
 				</Button>
-				{!isRecruiter && <Button size="xs">Apply</Button>}
+				{!isRecruiter && (
+					<Button size="xs" onClick={handleApply}>
+						Apply
+					</Button>
+				)}
 			</Flex>
+
+			{/* Apply Job Modal */}
+			<ApplyJobModal
+				opened={isApplyModalOpen}
+				onClose={handleModalClose}
+				onSubmit={handleApplicationSubmit}
+				jobTitle={title}
+			/>
 		</Card>
 	);
 };
 
 const JobSection = () => {
-	// later to be replaced with actual jobs from api
-
-	const jobsPosting: JobCardProps[] = [
-		{
-			id: 1,
-			title: "Software Engineer",
-			department: "Engineering",
-			jobType: "Full-time",
-			recruitmentQuota: "2",
-			experiences: "2+ years",
-			location: "Remote",
-			salary: "$80,000 - $100,000",
-			status: "active",
-			candidatesApplied: "10",
-		},
-		{
-			id: 2,
-			title: "Marketing Manager",
-			department: "Marketing",
-			jobType: "Full-time",
-			recruitmentQuota: "1",
-			experiences: "5+ years",
-			location: "San Francisco, CA",
-			salary: "$120,000 - $140,000",
-			status: "active",
-			candidatesApplied: "10",
-		},
-		{
-			id: 3,
-			title: "UI/UX Designer",
-			department: "Design",
-			jobType: "Full-time",
-			recruitmentQuota: "1",
-			experiences: "3+ years",
-			location: "New York, NY",
-			salary: "$90,000 - $110,000",
-			status: "inactive",
-			candidatesApplied: "10",
-		},
-		{
-			id: 4,
-			title: "Content Writer",
-			department: "Marketing",
-			jobType: "Part-time",
-			recruitmentQuota: "1",
-			experiences: "2+ years",
-			location: "Remote",
-			salary: "$40,000 - $50,000",
-			status: "inactive",
-			candidatesApplied: "10",
-		},
-	];
-	const [searchedJobs, setSearchedJobs] = useState<JobCardProps[]>([]);
-	const [selectedStatus, setSelectedStatus] = useState("active");
-	const [selectedDepartment, setSelectedDepartment] = useState("all");
-	// State to control the modal visibility
+	const dispatch = useAppDispatch();
+	const { jobs, selectedStatus, selectedDepartment } = useAppSelector(
+		(state) => state.jobs,
+	);
+	const [searchedJobs, setSearchedJobs] = useState<Job[]>([]);
 	const [modalOpen, setModalOpen] = useState(false);
-	// State for form inputs
-	const [formData, setFormData] = useState({
+	const [formData, setFormData] = useState<Job>({
+		id: 0,
 		title: "",
 		department: "",
 		jobType: "",
@@ -238,11 +226,9 @@ const JobSection = () => {
 		location: "",
 		salary: "",
 	});
-	const isMobile = useMediaQuery("(max-width: 768px)");
+
 	const filterAndSortJobs = useCallback(() => {
-		let filteredJobs = jobsPosting.filter(
-			(job) => job.status === selectedStatus,
-		);
+		let filteredJobs = jobs.filter((job) => job.status === selectedStatus);
 
 		if (selectedDepartment !== "all") {
 			filteredJobs = filteredJobs.filter(
@@ -250,26 +236,19 @@ const JobSection = () => {
 			);
 		}
 
-		const sortedOrders = filteredJobs.sort(
-			(a: JobCardProps, b: JobCardProps) => a.id - b.id,
-		);
+		const sortedOrders = filteredJobs.sort((a: Job, b: Job) => a.id - b.id);
 		setSearchedJobs(sortedOrders);
-	}, [jobsPosting, selectedStatus, selectedDepartment]);
+	}, [jobs, selectedStatus, selectedDepartment]);
 	useEffect(() => {
 		filterAndSortJobs();
 	}, [selectedStatus, selectedDepartment]);
 
-	const handleStatusChange = (value: string | null) => {
-		if (value) {
-			setSelectedStatus(value);
-		}
+	const handleStatusChange = (value: "active" | "inactive") => {
+		dispatch(setSelectedStatus(value));
 	};
 
-	const handleDepartmentChange = (
-		value: string | null,
-		option: ComboboxItem,
-	) => {
-		setSelectedDepartment(value || "all");
+	const handleDepartmentChange = (value: string | null) => {
+		dispatch(setSelectedDepartment(value || "all"));
 	};
 	// Handle form input change
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -283,8 +262,7 @@ const JobSection = () => {
 	// Handle form submission
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		console.log("Job Created:", formData);
-		// Here you can call an API to create the job
+		dispatch(addJob({ ...formData, id: jobs.length + 1 }));
 		setModalOpen(false);
 	};
 

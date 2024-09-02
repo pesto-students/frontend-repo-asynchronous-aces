@@ -17,12 +17,21 @@ import {
 import { IconArrowRight, IconStar } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import classes from "./HeroSection.module.css";
-import { Logo } from "../Logo/Logo";
+import Cookies from "js-cookie";
 import hrlottieImg from "../../../assests/HrLottieImage.json";
 import LottieComponent from "./LottieComponent";
 import { relative } from "path";
 export function HeroSection() {
 	const router = useRouter();
+	const handleGetStarted = () => {
+		const token = Cookies.get("token");
+
+		if (token) {
+			router.push("/dashboard");
+		} else {
+			router.push("/login");
+		}
+	};
 
 	return (
 		<Container pt="sm" size="lg">
@@ -58,9 +67,7 @@ export function HeroSection() {
 								<Button
 									size="lg"
 									className={classes.control}
-									onClick={() => {
-										router.push("/dashboard");
-									}}
+									onClick={handleGetStarted}
 									rightSection={<IconArrowRight />}
 								>
 									Get started
