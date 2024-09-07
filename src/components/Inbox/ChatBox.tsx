@@ -32,8 +32,7 @@ import { InlineWidget } from "react-calendly";
 import CollaborativeEditor from "./CollaborativeEditor";
 import { useMediaQuery } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
-
-const isRecruiter = true;
+import { useAppSelector } from "@/redux/store";
 
 // Type Definitions
 type User = {
@@ -231,7 +230,7 @@ const ChatBox = () => {
 	const [searchQuery, setSearchQuery] = useState<string>("");
 	const [showCalendly, setShowCalendly] = useState(false);
 	const { colorScheme } = useMantineColorScheme();
-
+	const isRecruiter = useAppSelector((state) => state.toggle.isRecruiter);
 	const isSmallScreen = useMediaQuery("(max-width: 768px)");
 	const bg =
 		colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[0];
@@ -294,7 +293,7 @@ const ChatBox = () => {
 				root: {
 					position: "fixed",
 					zIndex: 9999,
-					bottom: 0,
+					bottom: 35,
 					right: 0,
 				},
 			}),
@@ -448,7 +447,7 @@ const ChatBox = () => {
 								<GridCol span={12}>
 									<Paper
 										p={10}
-										mih={"65vh"}
+										mih={"58vh"}
 										style={{
 											display: "flex",
 											flexDirection: "column",
@@ -500,8 +499,8 @@ const ChatBox = () => {
 												placeholder="Type your message..."
 												variant="filled"
 												autosize
-												minRows={7}
-												maxRows={7}
+												minRows={3}
+												maxRows={3}
 												m={"sm"}
 												onChange={(event) => setNewMessage(event.target.value)}
 												style={{ resize: "none" }}
@@ -562,9 +561,9 @@ const ChatBox = () => {
 												<Text mt="xs" c="dimmed">
 													{selectedChat.receiver.job || "Not specified"}
 												</Text>
-												<Button mt="sm" variant="outline" size="sm">
+												{/* <Button mt="sm" variant="outline" size="sm">
 													View Profile
-												</Button>
+												</Button> */}
 												<Divider my="sm" c={"black"} />
 												<Text mt="xs" fw={500}>
 													Applied For:
@@ -793,9 +792,9 @@ const ChatBox = () => {
 											<Text mt="xs" c="dimmed">
 												{selectedChat.receiver.job || "Not specified"}
 											</Text>
-											<Button mt="sm" variant="outline" size="sm">
+											{/* <Button mt="sm" variant="outline" size="sm">
 												View Profile
-											</Button>
+											</Button> */}
 											<Divider my="sm" c={"black"} />
 											<Text mt="xs" fw={500}>
 												Applied For:

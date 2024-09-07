@@ -51,7 +51,9 @@ export default function DashboardLayout({ children }: Props) {
 						colorScheme === "dark"
 							? theme.colors.dark[7]
 							: theme.colors.navy[6],
+					width: opened && !isSmallScreen ? 0 : 300,
 				}}
+				// hidden={isSmallScreen && !opened}
 			>
 				<Navbar data={navLinks} hidden={!opened} />
 			</AppShell.Navbar>
@@ -71,13 +73,33 @@ export default function DashboardLayout({ children }: Props) {
 				/>
 			</AppShell.Header>
 
-			<AppShell.Aside pos={"absolute"} w={{ sm: 60, md: 80, lg: 80 }} p={20}>
+			{/* <AppShell.Aside pos={"absolute"} w={{ sm: 60, md: 80, lg: 80 }} p={20}>
 				<AsideComponent />
-			</AppShell.Aside>
-			<AppShell.Main bg={bg}>{children}</AppShell.Main>
-			<AppShell.Footer>
+			</AppShell.Aside> */}
+			<AppShell.Main
+				style={{
+					width: "100%", // Make Main take full width
+					maxWidth: "100%",
+					marginTop: "50px",
+					// marginLeft: isSmallScreen ? 0 : opened ? 0 : 300,
+					padding: isSmallScreen ? "20px" : "20px 20px 20px 320px", // Adjust padding
+					overflowX: "hidden", // Prevent horizontal overflow
+					backgroundColor: bg,
+				}}
+				bg={bg}
+			>
+				{children}
+			</AppShell.Main>
+			<AppShell.Footer
+				style={{
+					position: "fixed",
+					bottom: 0,
+					left: 0,
+					width: "100%",
+				}}
+			>
 				<Text w="full" size="sm" c="gray">
-					CopyRight © 2023 Jotyy
+					CopyRight © Asynchronous Aces
 				</Text>
 			</AppShell.Footer>
 		</AppShell>

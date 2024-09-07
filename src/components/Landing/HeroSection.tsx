@@ -77,8 +77,7 @@ export function HeroSection() {
 									size="lg"
 									className={classes.control}
 									onClick={() => {
-										// open github
-										window.open("https://github.com/jotyy/mantine-admin");
+										// window.open("https://github.com/jotyy/mantine-admin");
 									}}
 									rightSection={<IconStar />}
 								>

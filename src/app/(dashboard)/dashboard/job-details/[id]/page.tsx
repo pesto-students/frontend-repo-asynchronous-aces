@@ -9,6 +9,7 @@ import JobDescriptionCards from "@/components/Dashboard/JobDescriptionCards";
 import CandidatesList from "@/components/Dashboard/CandidatesList";
 import ApplyJobModal from "@/components/Dashboard/ApplyJobModal";
 import SharePromoteModal from "@/components/Dashboard/SharePromoteModal";
+import { useAppSelector } from "@/redux/store";
 
 type Attachment = {
 	name: string;
@@ -55,8 +56,6 @@ const dummyJobDetails: JobDetails = {
 		'<h2 style="font-size: 24px; font-weight: bold; margin-bottom: 16px;">Job Title:</h2><p>Enter Job Title</p><h3 style="font-size: 18px; font-weight: bold; margin-bottom: 12px;">Job Description:</h3><p>Enter Job Description</p><h3 style="font-size: 18px; font-weight: bold; margin-bottom: 12px;">Responsibilities:</h3><ul style="list-style-type: disc; padding-left: 20px;"><li>Responsibility 1</li><li>Responsibility 2</li><li>Responsibility 3</li></ul><h3 style="font-size: 18px; font-weight: bold; margin-bottom: 12px;">Requirements:</h3><ul style="list-style-type: disc; padding-left: 20px;"><li>Requirement 1</li><li>Requirement 2</li><li>Requirement 3</li></ul></p>',
 };
 
-const isRecruiter = true;
-
 const JobDetails: React.FC = () => {
 	const params = useParams();
 	const router = useRouter();
@@ -67,6 +66,7 @@ const JobDetails: React.FC = () => {
 	const [jobData, setJobData] = useState<JobDetails | null>(null);
 	const [isApplyModalOpen, setIsApplyModalOpen] = useState<boolean>(false);
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+	const isRecruiter = useAppSelector((state) => state.toggle.isRecruiter);
 
 	useEffect(() => {
 		const fetchJobDetails = async () => {
@@ -140,7 +140,12 @@ const JobDetails: React.FC = () => {
 		jobData && (
 			<Grid gutter={"lg"}>
 				<GridCol span={12}>
-					<Flex align={"center"} justify={"space-between"} p={"md"}>
+					<Flex
+						wrap={isMobile ? "wrap" : "nowrap"}
+						align={"center"}
+						justify={"space-between"}
+						p={"md"}
+					>
 						<Flex>
 							<Button
 								leftSection={<IconArrowLeft size={23} />}
@@ -164,16 +169,29 @@ const JobDetails: React.FC = () => {
 						</Flex>
 
 						<Flex
-							gap={3}
-							style={{ flexDirection: isMobile ? "column" : "row" }}
+							gap={isMobile ? 10 : 3}
+							wrap={isMobile ? "wrap" : "nowrap"}
+							justify={isMobile ? "center" : "flex-end"}
 						>
-							<Button variant="outline" onClick={handleShareClick}>
+							<Button
+								variant="outline"
+								onClick={handleShareClick}
+								w={200}
+								fullWidth={isMobile}
+							>
 								Share & Promote
 							</Button>
 							{isRecruiter ? (
-								<Button variant="filled">Published</Button>
+								<Button variant="filled" fullWidth={isMobile}>
+									Published
+								</Button>
 							) : (
-								<Button variant="filled" onClick={handleApply}>
+								<Button
+									variant="filled"
+									onClick={handleApply}
+									w={200}
+									fullWidth={isMobile}
+								>
 									Apply
 								</Button>
 							)}

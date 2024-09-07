@@ -13,7 +13,7 @@ import { spaceGrotesk } from "@/styles/fonts";
 import { theme } from "@/styles/theme";
 import { AppProvider } from "./provider";
 // import { Provider } from "react-redux";
-import { store } from "@/store/store";
+import { store } from "@/redux/store";
 
 export const metadata = {
 	metadataBase: new URL("https://mantine-admin.vercel.app/"),

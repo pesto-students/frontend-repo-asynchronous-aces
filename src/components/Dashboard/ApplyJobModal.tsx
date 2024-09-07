@@ -39,13 +39,13 @@ const ApplyJobModal: React.FC<ApplyJobModalProps> = ({
 			title={`Apply for the ${jobTitle}`}
 		>
 			<Box>
-				<TextInput
+				{/* <TextInput
 					label="Email"
 					placeholder="Your email"
 					value={email}
 					onChange={(event) => setEmail(event.currentTarget.value)}
 					required
-				/>
+				/> */}
 				<FileInput
 					label="Upload Resume"
 					placeholder="Select file"

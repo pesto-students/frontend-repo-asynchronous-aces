@@ -32,7 +32,7 @@ export default function AuthLayout({ children }: Props) {
 						<Flex gap={10}>
 							{title}
 							<Logo
-								variant={colorScheme === "dark" ? "dark" : "light"}
+								variant={colorScheme === "dark" ? "light" : "dark"}
 								size="40px"
 							/>
 						</Flex>

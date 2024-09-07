@@ -7,16 +7,23 @@ import {
 	Group,
 	Modal,
 	Table,
+	TableTbody,
+	TableTd,
+	TableTh,
+	TableThead,
+	TableTr,
 	Text,
 	Textarea,
 } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import React, { useState, useEffect } from "react";
 
 interface Candidate {
 	id: number;
 	name: string;
 	avatar: string;
-	role: string;
+	role?: string;
+	experience: number;
 	status: string;
 	// Add other properties as needed
 }
@@ -26,21 +33,21 @@ const dummyCandidates = [
 		id: 1,
 		name: "John Doe",
 		avatar: "https://example.com/avatar1.jpg",
-		role: "UI Designer",
+		experience: 2,
 		status: "Active",
 	},
 	{
 		id: 2,
 		name: "Jane Smith",
 		avatar: "https://example.com/avatar2.jpg",
-		role: "Frontend Developer",
+		experience: 5,
 		status: "Applied",
 	},
 	{
 		id: 3,
 		name: "Michael Johnson",
 		avatar: "https://example.com/avatar3.jpg",
-		role: "Backend Developer",
+		experience: 1,
 		status: "Interviewing",
 	},
 	// Add more candidates as needed
@@ -50,7 +57,7 @@ const CandidatesList = ({ jobId }: { jobId: number }) => {
 	const [candidates, setCandidates] = useState<Candidate[]>(dummyCandidates);
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-
+	const isSmallScreen = useMediaQuery("(max-width: 768px)");
 	// Uncomment and modify the useEffect hook for actual API data fetching
 	// useEffect(() => {
 	//   const fetchCandidates = async () => {
@@ -89,21 +96,21 @@ const CandidatesList = ({ jobId }: { jobId: number }) => {
 	}
 
 	return (
-		<Table highlightOnHover>
-			<thead>
-				<tr>
-					<th></th>
-					<th>Name</th>
-					<th>Role</th>
-					<th>Status</th>
-					<th>Actions</th>
-				</tr>
-			</thead>
-			<tbody>
+		<Table highlightOnHover verticalSpacing={"md"}>
+			<TableThead>
+				<TableTr>
+					{!isSmallScreen && <TableTh></TableTh>}
+					<TableTh ta="center">Name</TableTh>
+					{!isSmallScreen && <TableTh ta="center">Experience</TableTh>}
+					<TableTh ta="center">Status</TableTh>
+					<TableTh ta="center">Actions</TableTh>
+				</TableTr>
+			</TableThead>
+			<TableTbody>
 				{candidates.map((candidate) => (
 					<CandidateRow key={candidate.id} user={candidate} />
 				))}
-			</tbody>
+			</TableTbody>
 		</Table>
 	);
 };
@@ -113,9 +120,11 @@ export default CandidatesList;
 export const CandidateRow = ({ user }: { user: Candidate }) => {
 	const [opened, setOpened] = useState(false);
 	const [message, setMessage] = useState("");
+	const isSmallScreen = useMediaQuery("(max-width: 768px)");
 	const handleMessageClick = () => {
 		setOpened(true); // Open the modal when the button is clicked
 	};
+	console.log(user);
 
 	const handleSendMessage = () => {
 		// Logic to initiate the chat with the first message
@@ -124,23 +133,29 @@ export const CandidateRow = ({ user }: { user: Candidate }) => {
 	};
 	return (
 		<>
-			<tr>
-				<td style={{ textAlign: "center" }}>
-					<Avatar radius="sm" src={user.avatar} />
-				</td>
-				<td style={{ textAlign: "center" }}>{user.name}</td>
-				<td style={{ textAlign: "center" }}>{user.role}</td>
-				<td style={{ textAlign: "center" }}>
+			<TableTr>
+				{!isSmallScreen && (
+					<TableTd style={{ textAlign: "center" }}>
+						<Avatar radius="sm" src={user.avatar} />
+					</TableTd>
+				)}
+				<TableTd style={{ textAlign: "center" }}>{user.name}</TableTd>
+				{!isSmallScreen && (
+					<TableTd style={{ textAlign: "center" }}>
+						{user.experience} years
+					</TableTd>
+				)}
+				<TableTd style={{ textAlign: "center" }}>
 					<Chip defaultChecked variant="light">
 						{user.status}
 					</Chip>
-				</td>
-				<td style={{ textAlign: "center" }}>
+				</TableTd>
+				<TableTd style={{ textAlign: "center" }}>
 					<Button variant="outline" size="xs" onClick={handleMessageClick}>
 						Message
 					</Button>
-				</td>
-			</tr>
+				</TableTd>
+			</TableTr>
 			<Modal
 				opened={opened}
 				onClose={() => setOpened(false)}

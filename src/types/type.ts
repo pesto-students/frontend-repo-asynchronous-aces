@@ -16,3 +16,16 @@ export interface JobState {
     selectedStatus: 'active' | 'inactive';
     selectedDepartment: string;
   }
+
+
+ export interface UserProfileData {
+	email?: string;
+	firstName?: string;
+	lastName?: string;
+	phone?: string;
+	calendlyUserName?: string;
+	avatar?: File | null;
+	department?: string;
+	jobTitle?: string;
+	experience?: number |null;
+  }

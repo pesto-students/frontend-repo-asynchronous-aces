@@ -8,6 +8,7 @@ import {
 	Flex,
 	Grid,
 	Group,
+	Loader,
 	Modal,
 	Select,
 	Tabs,
@@ -27,15 +28,15 @@ import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 
 import ApplyJobModal from "./ApplyJobModal";
-import { useAppDispatch, useAppSelector } from "@/store/store";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { Job } from "@/types/type";
 import {
 	addJob,
 	setSelectedDepartment,
 	setSelectedStatus,
-} from "@/store/slices/jobSlice";
+} from "@/redux/features/jobs/jobSlice";
+import { fetchJobsAsync } from "@/redux/features/jobs/jobActions";
 
-const isRecruiter = true;
 const JobCard = ({
 	id: jobId,
 	title,
@@ -49,6 +50,7 @@ const JobCard = ({
 }: Job) => {
 	const router = useRouter();
 	const [isApplyModalOpen, setIsApplyModalOpen] = useState<boolean>(false);
+	const isRecruiter = useAppSelector((state) => state.toggle.isRecruiter);
 	const handleApply = () => {
 		setIsApplyModalOpen(true);
 	};
@@ -93,7 +95,15 @@ const JobCard = ({
 		colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[0];
 
 	return (
-		<Card withBorder>
+		<Card
+			withBorder
+			style={{
+				minHeight: 350,
+				display: "flex",
+				flexDirection: "column",
+				justifyContent: "space-around",
+			}}
+		>
 			<Group>
 				<Text size="xs" mb={"1px"} c="dimmed">
 					{department.toUpperCase()}
@@ -157,29 +167,61 @@ const JobCard = ({
 				</Grid>
 			) : (
 				<Grid>
-					<Grid.Col span={6}>
-						<Group style={{ padding: 15 }} align="center">
-							<Text w={500}>Candidates:</Text>
+					<Grid.Col span={12}>
+						<Group style={{ padding: 15 }} justify="center" align="center">
+							{/* <Text w={500}>Candidates:</Text> */}
 							<Flex
 								gap="xs"
 								bg={bg}
 								ta={"center"}
-								w={{ base: 300, md: 250, lg: 250 }}
-								h={{ base: 100, lg: 100 }}
+								w={"70%"} // Make width responsive and full-width on small screens
+								h={100} // Set height explicitly
 								align={"center"}
+								justify="center" // Center the content
+								style={{
+									border: "1px solid lightgray",
+									borderRadius: "8px",
+									padding: "10px",
+								}}
 							>
-								<Text fw={"bolder"} w={700}>
-									QUOTA {recruitmentQuota}
-								</Text>
+								<Box style={{ textAlign: "center" }}>
+									<Text
+										fw={600}
+										size="sm"
+										style={{ color: "gray", letterSpacing: 1 }} // Styling for label "QUOTA"
+									>
+										QUOTA
+									</Text>
+									<Text
+										fw={900}
+										size="xl"
+										// Styling for value
+									>
+										{recruitmentQuota}
+									</Text>
+								</Box>
 								<Divider
 									orientation="vertical"
 									size={"md"}
 									color="lightgreen"
 									opacity={"50%"}
 								/>
-								<Text fw={"bolder"} w={700}>
-									CANDIDATES {candidatesApplied}
-								</Text>
+								<Box style={{ textAlign: "center" }}>
+									<Text
+										fw={600}
+										size="sm"
+										style={{ color: "gray", letterSpacing: 1 }} // Styling for label "CANDIDATES"
+									>
+										CANDIDATES
+									</Text>
+									<Text
+										fw={900}
+										size="xl"
+										// Styling for value
+									>
+										{candidatesApplied}
+									</Text>
+								</Box>
 							</Flex>
 						</Group>
 					</Grid.Col>
@@ -214,8 +256,10 @@ const JobSection = () => {
 	const { jobs, selectedStatus, selectedDepartment } = useAppSelector(
 		(state) => state.jobs,
 	);
+	const loading = !jobs.length;
 	const [searchedJobs, setSearchedJobs] = useState<Job[]>([]);
 	const [modalOpen, setModalOpen] = useState(false);
+	const isRecruiter = useAppSelector((state) => state.toggle.isRecruiter);
 	const [formData, setFormData] = useState<Job>({
 		id: 0,
 		title: "",
@@ -227,6 +271,9 @@ const JobSection = () => {
 		salary: "",
 	});
 
+	useEffect(() => {
+		dispatch(fetchJobsAsync());
+	}, [dispatch]);
 	const filterAndSortJobs = useCallback(() => {
 		let filteredJobs = jobs.filter((job) => job.status === selectedStatus);
 
@@ -265,6 +312,9 @@ const JobSection = () => {
 		dispatch(addJob({ ...formData, id: jobs.length + 1 }));
 		setModalOpen(false);
 	};
+	if (loading) {
+		return <Loader />;
+	}
 
 	return (
 		<div>

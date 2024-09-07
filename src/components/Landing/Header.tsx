@@ -15,6 +15,8 @@ import { useDisclosure } from "@mantine/hooks";
 import { IconChevronDown } from "@tabler/icons-react";
 import { Logo } from "@/components/Logo/Logo";
 import classes from "./Header.module.css";
+import { useRouter } from "next/navigation";
+import { useCookie } from "react-use"; // Import useCookies
 
 interface HeaderActionProps {
 	links: {
@@ -27,6 +29,19 @@ interface HeaderActionProps {
 export function Header({ links }: HeaderActionProps) {
 	const [opened, { toggle }] = useDisclosure(false);
 	const { colorScheme } = useMantineColorScheme();
+	const router = useRouter(); // Next.js router for navigation
+	const [userToken, setUserToken] = useCookie("userToken"); // useCookies hook to get the cookie
+
+	const handleLoginClick = () => {
+		if (userToken) {
+			// If userToken is found, redirect to the dashboard
+			router.push("/dashboard");
+		} else {
+			// Otherwise, redirect to the login page
+			router.push("/login");
+		}
+	};
+
 	const items = links.map((link) => {
 		const menuItems = link.links?.map((item) => (
 			<Menu.Item key={item.link}>{item.label}</Menu.Item>
@@ -84,7 +99,7 @@ export function Header({ links }: HeaderActionProps) {
 				<Group gap="sm" className={classes.links}>
 					{items}
 				</Group>
-				<Button radius="xl" h={30}>
+				<Button radius="xl" h={30} onClick={handleLoginClick}>
 					LogIn/SignUp
 				</Button>
 

@@ -1,7 +1,8 @@
 "use client";
 
-import { login } from "@/store/slices/authSlice";
-import { useAppDispatch } from "@/store/store";
+import { loginUser } from "@/api/auth";
+import { login } from "@/redux/features/authSlice";
+import { useAppDispatch } from "@/redux/store";
 import {
 	Anchor,
 	Button,
@@ -28,26 +29,25 @@ export function LoginForm() {
 	const handleSignIn = async () => {
 		setLoading(true);
 		try {
-			const response = await axios.post("/api/auth/login", { email, password });
-			if (response.status === 200) {
-				const { token } = response.data;
-				dispatch(login(token));
-				const options = rememberMe
-					? { path: "/", maxAge: 30 * 24 * 60 * 60 }
-					: { path: "/", maxAge: 3600 };
+			const data = await loginUser(email, password);
+			const { token } = data;
+			dispatch(login(token));
+			const options = rememberMe
+				? { path: "/", maxAge: 30 * 24 * 60 * 60 }
+				: { path: "/", maxAge: 3600 };
 
-				setCookie(token, options);
-				router.push("/dashboard");
-			} else {
-				alert("Login failed. Please check your credentials.");
-			}
+			setCookie(token, options);
+			router.push("/dashboard");
 		} catch (error) {
-			alert("An error occurred during login. Please try again.");
+			if (error instanceof Error) {
+				alert(error.message || "Login failed. Please check your credentials.");
+			} else {
+				alert("An unexpected error occurred.");
+			}
 		} finally {
 			setLoading(false);
 		}
 	};
-
 	return (
 		<Card withBorder shadow="md" p={30} mt={30} radius="md">
 			<TextInput

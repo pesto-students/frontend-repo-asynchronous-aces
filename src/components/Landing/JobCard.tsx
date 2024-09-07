@@ -1,5 +1,8 @@
+"use client";
 import { Button, Card, Group, Image, Text } from "@mantine/core";
+import { useRouter } from "next/navigation";
 import React from "react";
+import { useCookie } from "react-use";
 
 interface JobCardProps {
 	title: string;
@@ -13,6 +16,18 @@ const JobCard: React.FC<JobCardProps> = ({
 	description,
 	searchButtonDes,
 }) => {
+	const router = useRouter();
+	const [userToken, setUserToken] = useCookie("userToken"); // useCookies hook to get the cookie
+
+	const handleLoginClick = () => {
+		if (userToken) {
+			// If userToken is found, redirect to the dashboard
+			router.push("/dashboard");
+		} else {
+			// Otherwise, redirect to the login page
+			router.push("/login");
+		}
+	};
 	return (
 		<Card
 			withBorder
@@ -39,6 +54,7 @@ const JobCard: React.FC<JobCardProps> = ({
 					fullWidth
 					variant="filled"
 					color="blue"
+					onClick={handleLoginClick}
 				>
 					{searchButtonDes}
 				</Button>

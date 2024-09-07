@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { store } from "./store/store";
-import { logout } from "./store/slices/authSlice";
+import { store } from "./redux/store";
+import { logout } from "./redux/features/authSlice";
 
 
 export function middleware(request: NextRequest){

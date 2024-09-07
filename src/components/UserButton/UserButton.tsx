@@ -6,6 +6,7 @@ import {
 	type UnstyledButtonProps,
 } from "@mantine/core";
 import classes from "./UserButton.module.css";
+import { useRouter } from "next/navigation";
 
 interface UserButtonProps extends UnstyledButtonProps {
 	image: string;
@@ -14,8 +15,12 @@ interface UserButtonProps extends UnstyledButtonProps {
 }
 
 export function UserButton({ image, name, email }: UserButtonProps) {
+	const router = useRouter();
 	return (
-		<UnstyledButton className={classes.user}>
+		<UnstyledButton
+			className={classes.user}
+			onClick={() => router.replace("/profile")}
+		>
 			<Flex direction="row" gap={8}>
 				<Avatar src={image} radius="xl" />
 
