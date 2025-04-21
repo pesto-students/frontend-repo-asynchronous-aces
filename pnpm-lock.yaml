@@ -39,14 +39,14 @@ importers:
         specifier: 5.68.0
         version: 5.68.0(react@18.3.1)
       '@tanstack/react-table':
-        specifier: 8.21.2
-        version: 8.21.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: 8.21.3
+        version: 8.21.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@vercel/analytics':
         specifier: 1.5.0
         version: 1.5.0(next@14.2.28(@babel/core@7.25.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
       chart.js:
-        specifier: 4.4.8
-        version: 4.4.8
+        specifier: 4.4.9
+        version: 4.4.9
       dayjs:
         specifier: 1.11.13
         version: 1.11.13
@@ -64,7 +64,7 @@ importers:
         version: 18.3.1
       react-chartjs-2:
         specifier: 5.3.0
-        version: 5.3.0(chart.js@4.4.8)(react@18.3.1)
+        version: 5.3.0(chart.js@4.4.9)(react@18.3.1)
       react-dom:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
@@ -78,8 +78,8 @@ importers:
         specifier: 2.1.1
         version: 2.1.1(stylis@4.3.2)
       zod:
-        specifier: 3.24.2
-        version: 3.24.2
+        specifier: 3.24.3
+        version: 3.24.3
       zustand:
         specifier: 4.5.6
         version: 4.5.6(@types/react@18.3.20)(react@18.3.1)
@@ -669,8 +669,8 @@ packages:
       react: '>=16.8'
       react-dom: '>=16.8'
 
-  '@tanstack/react-table@8.21.2':
-    resolution: {integrity: sha512-11tNlEDTdIhMJba2RBH+ecJ9l1zgS2kjmexDPAraulc8jeNA4xocSNeyzextT0XJyASil4XsCYlJmf5jEWAtYg==}
+  '@tanstack/react-table@8.21.3':
+    resolution: {integrity: sha512-5nNMTSETP4ykGegmVkhjcS8tTLW6Vl4axfEGQN3v0zdHYbK4UfoqfPChclTrJ4EoK9QynqAu9oUf8VEmrpZ5Ww==}
     engines: {node: '>=12'}
     peerDependencies:
       react: '>=16.8'
@@ -686,8 +686,8 @@ packages:
     resolution: {integrity: sha512-P9dF7XbibHph2PFRz8gfBKEXEY/HJPOhym8CHmjF8y3q5mWpKx9xtZapXQUWCgkqvsK0R46Azuz+VaxD4Xl+Tg==}
     engines: {node: '>=12'}
 
-  '@tanstack/table-core@8.21.2':
-    resolution: {integrity: sha512-uvXk/U4cBiFMxt+p9/G7yUWI/UbHYbyghLCjlpWZ3mLeIZiUBSKcUnw9UnKkdRz7Z/N4UBuFLWQdJCjUe7HjvA==}
+  '@tanstack/table-core@8.21.3':
+    resolution: {integrity: sha512-ldZXEhOBb8Is7xLs01fR3YEc3DERiz5silj8tnGkFZytt1abEvl/GhUmCE0PMLaMPTa3Jk4HbKmRlHmu+gCftg==}
     engines: {node: '>=12'}
 
   '@tanstack/virtual-core@3.11.2':
@@ -1006,8 +1006,8 @@ packages:
     resolution: {integrity: sha512-kWWXztvZ5SBQV+eRgKFeh8q5sLuZY2+8WUIzlxWVTg+oGwY14qylx1KbKzHd8P6ZYkAg0xyIDU9JMHhyJMZ1jw==}
     engines: {node: '>=10'}
 
-  chart.js@4.4.8:
-    resolution: {integrity: sha512-IkGZlVpXP+83QpMm4uxEiGqSI7jFizwVtF3+n5Pc3k7sMO+tkd0qxh2OzLhenM0K80xtmAONWGBn082EiBQSDA==}
+  chart.js@4.4.9:
+    resolution: {integrity: sha512-EyZ9wWKgpAU0fLJ43YAEIF8sr5F2W3LqbS40ZJyHIner2lY14ufqv2VMp69MAiZ2rpwxEUxEhIH/0U3xyRynxg==}
     engines: {pnpm: '>=8'}
 
   ci-info@3.9.0:
@@ -3266,8 +3266,8 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
-  zod@3.24.2:
-    resolution: {integrity: sha512-lY7CDW43ECgW9u1TcT3IoXHflywfVqDYze4waEz812jR/bZ8FHDsl7pFQoSZTz5N+2NqRXs8GBwnAwo3ZNxqhQ==}
+  zod@3.24.3:
+    resolution: {integrity: sha512-HhY1oqzWCQWuUqvBFnsyrtZRhyPeR7SUGv+C4+MsisMuVfSPx8HpwWqH8tRahSlt6M3PiFAcoeFhZAqIXTxoSg==}
 
   zustand@4.5.6:
     resolution: {integrity: sha512-ibr/n1hBzLLj5Y+yUcU7dYw8p6WnIVzdJbnX+1YpaScvZVF2ziugqHs+LAmHw4lWO9c/zRj+K1ncgWDQuthEdQ==}
@@ -3964,9 +3964,9 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@tanstack/react-table@8.21.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@tanstack/react-table@8.21.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@tanstack/table-core': 8.21.2
+      '@tanstack/table-core': 8.21.3
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
@@ -3978,7 +3978,7 @@ snapshots:
 
   '@tanstack/table-core@8.20.5': {}
 
-  '@tanstack/table-core@8.21.2': {}
+  '@tanstack/table-core@8.21.3': {}
 
   '@tanstack/virtual-core@3.11.2': {}
 
@@ -4319,7 +4319,7 @@ snapshots:
 
   char-regex@1.0.2: {}
 
-  chart.js@4.4.8:
+  chart.js@4.4.9:
     dependencies:
       '@kurkle/color': 0.3.2
 
@@ -6039,9 +6039,9 @@ snapshots:
 
   quick-lru@4.0.1: {}
 
-  react-chartjs-2@5.3.0(chart.js@4.4.8)(react@18.3.1):
+  react-chartjs-2@5.3.0(chart.js@4.4.9)(react@18.3.1):
     dependencies:
-      chart.js: 4.4.8
+      chart.js: 4.4.9
       react: 18.3.1
 
   react-dom@18.3.1(react@18.3.1):
@@ -6731,7 +6731,7 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  zod@3.24.2: {}
+  zod@3.24.3: {}
 
   zustand@4.5.6(@types/react@18.3.20)(react@18.3.1):
     dependencies:
