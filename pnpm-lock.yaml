@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@hookform/resolvers':
         specifier: 3.10.0
-        version: 3.10.0(react-hook-form@7.56.2(react@18.3.1))
+        version: 3.10.0(react-hook-form@7.56.3(react@18.3.1))
       '@mantine/core':
         specifier: 7.17.7
         version: 7.17.7(@mantine/hooks@7.17.7(react@18.3.1))(@types/react@18.3.20)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -36,8 +36,8 @@ importers:
         specifier: 2.47.0
         version: 2.47.0(react@18.3.1)
       '@tanstack/react-query':
-        specifier: 5.75.2
-        version: 5.75.2(react@18.3.1)
+        specifier: 5.75.7
+        version: 5.75.7(react@18.3.1)
       '@tanstack/react-table':
         specifier: 8.21.3
         version: 8.21.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -69,8 +69,8 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       react-hook-form:
-        specifier: 7.56.2
-        version: 7.56.2(react@18.3.1)
+        specifier: 7.56.3
+        version: 7.56.3(react@18.3.1)
       react-use:
         specifier: 17.6.0
         version: 17.6.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -121,8 +121,8 @@ importers:
         specifier: 29.7.0
         version: 29.7.0
       lint-staged:
-        specifier: 15.5.1
-        version: 15.5.1
+        specifier: 15.5.2
+        version: 15.5.2
       postcss:
         specifier: 8.5.3
         version: 8.5.3
@@ -654,11 +654,11 @@ packages:
     resolution: {integrity: sha512-Wo1iKt2b9OT7d+YGhvEPD3DXvPv2etTusIMhMUoG7fbhmxcXCtIjJDEygy91Y2JFlwGyjqiBPRozme7UD8hoqg==}
     engines: {node: '>=12'}
 
-  '@tanstack/query-core@5.75.0':
-    resolution: {integrity: sha512-rk8KQuCdhoRkzjRVF3QxLgAfFUyS0k7+GCQjlGEpEGco+qazJ0eMH6aO1DjDjibH7/ik383nnztua3BG+lOnwg==}
+  '@tanstack/query-core@5.75.7':
+    resolution: {integrity: sha512-4BHu0qnxUHOSnTn3ow9fIoBKTelh0GY08yn1IO9cxjBTsGvnxz1ut42CHZqUE3Vl/8FAjcHsj8RNJMoXvjgHEA==}
 
-  '@tanstack/react-query@5.75.2':
-    resolution: {integrity: sha512-8F8VOsWUfSkCFoi62O9HSZT9jDgg28Ln8Z2dYKfRo/O2A0sgvr0uxTuNoon3PPXoDuHofv5V3elBI1M2Gh1MPg==}
+  '@tanstack/react-query@5.75.7':
+    resolution: {integrity: sha512-JYcH1g5pNjKXNQcvvnCU/PueaYg05uKBDHlWIyApspv7r5C0BM12n6ysa2QF2T+1tlPnNXOob8vr8o96Nx0GxQ==}
     peerDependencies:
       react: ^18 || ^19
 
@@ -2049,8 +2049,8 @@ packages:
   lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
 
-  lint-staged@15.5.1:
-    resolution: {integrity: sha512-6m7u8mue4Xn6wK6gZvSCQwBvMBR36xfY24nF5bMTf2MHDYG6S3yhJuOgdYVw99hsjyDt2d4z168b3naI8+NWtQ==}
+  lint-staged@15.5.2:
+    resolution: {integrity: sha512-YUSOLq9VeRNAo/CTaVmhGDKG+LBtA8KF1X4K5+ykMSwWST1vDxJRB2kv2COgLb1fvpCo+A/y9A0G0znNVmdx4w==}
     engines: {node: '>=18.12.0'}
     hasBin: true
 
@@ -2552,8 +2552,8 @@ packages:
     peerDependencies:
       react: '>= 16.8 || 18.0.0'
 
-  react-hook-form@7.56.2:
-    resolution: {integrity: sha512-vpfuHuQMF/L6GpuQ4c3ZDo+pRYxIi40gQqsCmmfUBwm+oqvBhKhwghCuj2o00YCgSfU6bR9KC/xnQGWm3Gr08A==}
+  react-hook-form@7.56.3:
+    resolution: {integrity: sha512-IK18V6GVbab4TAo1/cz3kqajxbDPGofdF0w7VHdCo0Nt8PrPlOZcuuDq9YYIV1BtjcX78x0XsldbQRQnQXWXmw==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
@@ -3621,9 +3621,9 @@ snapshots:
 
   '@floating-ui/utils@0.2.8': {}
 
-  '@hookform/resolvers@3.10.0(react-hook-form@7.56.2(react@18.3.1))':
+  '@hookform/resolvers@3.10.0(react-hook-form@7.56.3(react@18.3.1))':
     dependencies:
-      react-hook-form: 7.56.2(react@18.3.1)
+      react-hook-form: 7.56.3(react@18.3.1)
 
   '@hutson/parse-repository-url@3.0.2': {}
 
@@ -3951,11 +3951,11 @@ snapshots:
     dependencies:
       remove-accents: 0.5.0
 
-  '@tanstack/query-core@5.75.0': {}
+  '@tanstack/query-core@5.75.7': {}
 
-  '@tanstack/react-query@5.75.2(react@18.3.1)':
+  '@tanstack/react-query@5.75.7(react@18.3.1)':
     dependencies:
-      '@tanstack/query-core': 5.75.0
+      '@tanstack/query-core': 5.75.7
       react: 18.3.1
 
   '@tanstack/react-table@8.20.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
@@ -5572,7 +5572,7 @@ snapshots:
 
   lines-and-columns@1.2.4: {}
 
-  lint-staged@15.5.1:
+  lint-staged@15.5.2:
     dependencies:
       chalk: 5.4.1
       commander: 13.1.0
@@ -6055,7 +6055,7 @@ snapshots:
       prop-types: 15.8.1
       react: 18.3.1
 
-  react-hook-form@7.56.2(react@18.3.1):
+  react-hook-form@7.56.3(react@18.3.1):
     dependencies:
       react: 18.3.1
 
