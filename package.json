@@ -41,7 +41,7 @@
 		"@tanstack/react-query": "5.89.0",
 		"@tanstack/react-table": "8.21.3",
 		"@vercel/analytics": "1.5.0",
-		"chart.js": "4.5.0",
+		"chart.js": "4.5.1",
 		"dayjs": "1.11.18",
 		"ky": "1.10.0",
 		"mantine-react-table": "2.0.0-beta.9",
@@ -74,6 +74,6 @@
 		"postcss-simple-vars": "7.0.1",
 		"prettier": "3.4.2",
 		"standard-version": "9.5.0",
-		"typescript": "5.9.2"
+		"typescript": "5.9.3"
 	}
 }
