@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@hookform/resolvers':
         specifier: 3.10.0
-        version: 3.10.0(react-hook-form@7.72.0(react@18.3.1))
+        version: 3.10.0(react-hook-form@7.72.1(react@18.3.1))
       '@mantine/core':
         specifier: 7.17.8
         version: 7.17.8(@mantine/hooks@7.17.8(react@18.3.1))(@types/react@18.3.28)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -69,8 +69,8 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       react-hook-form:
-        specifier: 7.72.0
-        version: 7.72.0(react@18.3.1)
+        specifier: 7.72.1
+        version: 7.72.1(react@18.3.1)
       react-use:
         specifier: 17.6.0
         version: 17.6.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -2550,8 +2550,8 @@ packages:
     peerDependencies:
       react: '>= 16.8 || 18.0.0'
 
-  react-hook-form@7.72.0:
-    resolution: {integrity: sha512-V4v6jubaf6JAurEaVnT9aUPKFbNtDgohj5CIgVGyPHvT9wRx5OZHVjz31GsxnPNI278XMu+ruFz+wGOscHaLKw==}
+  react-hook-form@7.72.1:
+    resolution: {integrity: sha512-RhwBoy2ygeVZje+C+bwJ8g0NjTdBmDlJvAUHTxRjTmSUKPYsKfMphkS2sgEMotsY03bP358yEYlnUeZy//D9Ig==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
@@ -3613,9 +3613,9 @@ snapshots:
 
   '@floating-ui/utils@0.2.8': {}
 
-  '@hookform/resolvers@3.10.0(react-hook-form@7.72.0(react@18.3.1))':
+  '@hookform/resolvers@3.10.0(react-hook-form@7.72.1(react@18.3.1))':
     dependencies:
-      react-hook-form: 7.72.0(react@18.3.1)
+      react-hook-form: 7.72.1(react@18.3.1)
 
   '@hutson/parse-repository-url@3.0.2': {}
 
@@ -6014,7 +6014,7 @@ snapshots:
       prop-types: 15.8.1
       react: 18.3.1
 
-  react-hook-form@7.72.0(react@18.3.1):
+  react-hook-form@7.72.1(react@18.3.1):
     dependencies:
       react: 18.3.1
 
