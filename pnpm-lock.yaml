@@ -136,8 +136,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1(postcss@8.5.32)
       prettier:
-        specifier: 3.8.5
-        version: 3.8.5
+        specifier: 3.9.10
+        version: 3.9.10
       typescript:
         specifier: 5.9.3
         version: 5.9.3
@@ -2493,8 +2493,8 @@ packages:
     resolution: {integrity: sha512-LJlKCCAUFKOuZxipUdYw1NzIITEsPcgyOG9LkvRJvuKj/bRzbuRY0ARXvL0pWGpsZvn8jku+LMep2eU0seHp8g==}
     engines: {node: ^10 || ^12 || >=14}
 
-  prettier@3.8.5:
-    resolution: {integrity: sha512-zxcTTCedNGJM4R8sj/Cq/F0W/c4iE0afWBcBwMTRtw4WHYP9TWkYjdiH3npPRUYsXQCPR0hTU9yjovOu+E6EQA==}
+  prettier@3.9.10:
+    resolution: {integrity: sha512-skGHTH1Yb9QvaTC4hWnRTzEYtCpApF0UMBPz+t/0ZPzP8ihefo/btKd+QA7pUE0fEwA1SbS/NmhyEcstdXOIdA==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -5986,7 +5986,7 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.2
 
-  prettier@3.8.5: {}
+  prettier@3.9.10: {}
 
   pretty-format@27.5.1:
     dependencies:
